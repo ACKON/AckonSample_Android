@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">AckonSample</string>
+    
+    <string name="ackoninfo_null">Ackon 정보가 없습니다.</string>
+    
+    <string name="http_error">통신 오류.</string>
+    
+    
+    <string name="data_agree_ok">Ackon위치정보사용 동의 완료</string>
+    
+    <string name="data_delete_ok">Ackon서버기록정보 삭제 완료</string>
+    
+    <string name="data_agree_error">Ackon위치정보사용 동의 실패</string>
+    <string name="data_delete_error">Ackon서버기록정보 삭제 실패</string>
+
+</resources>

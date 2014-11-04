@@ -1,0 +1,31 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="olive.ackon.sample.activity.MainActivity" >
+
+    <android.support.v4.widget.SlidingPaneLayout
+        android:id="@+id/paneLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <FrameLayout
+            android:id="@+id/menu_container"
+            android:layout_width="@dimen/menu_logo_size"
+            android:layout_height="match_parent" >
+
+            <include
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                layout="@layout/menu_layout" />
+        </FrameLayout>
+
+        <ExpandableListView
+            android:id="@+id/expandableListView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/background_light" >
+        </ExpandableListView>
+    </android.support.v4.widget.SlidingPaneLayout>
+
+</RelativeLayout>
