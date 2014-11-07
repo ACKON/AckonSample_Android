@@ -1,10 +1,10 @@
 package olive.ackon.sample.activity;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import olive.ackon.sample.AckonSample;
-import olive.ackon.sample.AckonSampleManager;
 import olive.ackon.sample.R;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -26,6 +26,7 @@ import com.olivestory.ackon.AckonListener;
 
 public class ScanActivity extends Activity {
 
+	private LinkedHashMap<String, Ackon> map = new LinkedHashMap<String, Ackon>();
 	private List<Ackon> list = new ArrayList<Ackon>();
 
 	@Override
@@ -60,12 +61,16 @@ public class ScanActivity extends Activity {
 							value += keys[i] + " : " + info.getValue(keys[i]) + "\n";
 						}
 
-						builder.setMessage(value);
-						builder.setPositiveButton(android.R.string.ok, null);
-						builder.show();
-					} else {
-						Toast.makeText(getApplicationContext(), R.string.ackoninfo_null, Toast.LENGTH_SHORT).show();
+						if (value.trim().length() > 0) {
+							builder.setMessage(value);
+							builder.setPositiveButton(android.R.string.ok, null);
+							builder.show();
+
+							return;
+						}
 					}
+
+					Toast.makeText(getApplicationContext(), R.string.ackoninfo_null, Toast.LENGTH_SHORT).show();
 				} else {
 					Toast.makeText(getApplicationContext(), R.string.ackoninfo_null, Toast.LENGTH_SHORT).show();
 				}
@@ -84,7 +89,7 @@ public class ScanActivity extends Activity {
 			// Map을 활용해서 Ackon을 리스트에 표시한다.
 			@Override
 			public void onAckonUpdate(Ackon ackon) throws NullPointerException {
-				notifyDataSetChanged();
+				notifyDataSetChanged(ackon);
 			}
 
 			@Override
@@ -94,24 +99,32 @@ public class ScanActivity extends Activity {
 
 			@Override
 			public void onAckonExit(Ackon ackon) throws NullPointerException {
-				notifyDataSetChanged();
 			}
 
 			/**
 			 * 업데이트 된 데이터 반영
 			 */
-			private void notifyDataSetChanged() {
-				synchronized (AckonSampleManager.ACKON_MAP) {
-					list.clear();
-					list.addAll(AckonSampleManager.ACKON_MAP.values());
-					runOnUiThread(new Runnable() {
-						@Override
-						public void run() {
-							if (adapter != null)
-								adapter.notifyDataSetChanged();
+			private void notifyDataSetChanged(Ackon ackon) {
+				if (ackon != null)
+					synchronized (map) {
+
+						if (map.get(ackon.getName()) == null) {
+
+							map.put(ackon.getName(), ackon);
+							list.add(ackon);
+						} else {
+							map.get(ackon.getName()).setRssi(ackon.getRssi());
 						}
-					});
-				}
+
+						runOnUiThread(new Runnable() {
+							@Override
+							public void run() {
+								if (adapter != null)
+									adapter.notifyDataSetChanged();
+							}
+						});
+
+					}
 			}
 		};
 
@@ -167,7 +180,7 @@ public class ScanActivity extends Activity {
 
 		@Override
 		public Ackon getItem(int position) {
-			return list.get(position);
+			return list.size() > position ? list.get(position) : null;
 		}
 
 		@Override
